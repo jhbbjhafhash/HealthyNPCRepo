@@ -1,50 +1,15 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class NPC : MonoBehaviour
 {
     [SerializeField] private float moveSpeed = 4f;
     [SerializeField] private float turnSpeed = 90f;
-    [SerializeField] private int startingHp = 100;
     [SerializeField] private UnityEngine.UI.Slider hpBarSlider = null;
-    [SerializeField] private ParticleSystem deathParticlePrefab = null;
-    [SerializeField] private int currentHp;
-
-    private void Start()
-    {
-        currentHp = startingHp;
-    }
+    [SerializeField] private int startingHp = 100;
 
     internal void TakeDamage(int amount)
     {
-        if (amount <= 0)
-            throw new ArgumentOutOfRangeException("Invalid Damage amount specified: " + amount);
-
-        currentHp -= amount;
-
-        UpdateUI();
-
-        if (currentHp <= 0)
-            Die();
-    }
-
-    private void UpdateUI()
-    {
-        var currentHpPct = (float)currentHp / (float)startingHp;
-
-        hpBarSlider.value = currentHpPct;
-    }
-
-    private void Die()
-    {
-        PlayDeathParticle();
-        GameObject.Destroy(this.gameObject);
-    }
-
-    private void PlayDeathParticle()
-    {
-        var deathparticle = Instantiate(deathParticlePrefab, transform.position, deathParticlePrefab.transform.rotation);
-        Destroy(deathparticle, 4f);
+        GetComponent<Health>().TakeDamage(amount);
     }
 
     private void Update()
@@ -58,5 +23,4 @@ public class NPC : MonoBehaviour
             TakeDamage(startingHp / 10);
         }
     }
-
 }
